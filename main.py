@@ -68,7 +68,7 @@ def getAllPdfUrls(path):
 def checkPDFpageColor(path):
     print("==============================================")
     print(path)
-    images = convert_from_path(path,poppler_path=r'C:\Users\Iconic\Downloads\python\poppler-23.05.0\Library\bin')
+    images = convert_from_path(path,poppler_path=r'\poppler-23.05.0\Library\bin')
     
     p = 1
     npg = []
@@ -99,7 +99,7 @@ def askForPrinterName():
 
 def printIt(fileURL, printerColor):
     
-    sumatra = "C:\\Users\\Iconic\\Downloads\\SumatraPDF-3.4.6-64\\SumatraPDF-3.4.6-64.exe"
+    sumatra = "\\SumatraPDF-3.4.6-64\\SumatraPDF-3.4.6-64.exe"
     
     # opened file as reading (r) in binary (b) mode
     file = open(fileURL, 'rb')
