@@ -25,7 +25,7 @@ st = time.time()
 
 def main():
     
-    allPrinters = [r"Brother HL-L5200DW series PrintEr",r"HP Color LaserJet Pro M478f-9f [D39EC8]"]
+    allPrinters = [r"Brother HL-L5200DW series Printer",r"HP Color LaserJet Pro M478f-9f [D39EC8]"]
     
     for printer in allPrinters:
         checkPrinter(printer)
@@ -58,7 +58,7 @@ def getAllPdfUrls(path):
             #print("VC")
             pass
         elif i.is_file() and str(i).endswith(".PDF"):
-            print(i)
+            #print(i)
             all_PDFs.append(i)
     
     #print(all_PDFs)
@@ -68,7 +68,7 @@ def getAllPdfUrls(path):
 def checkPDFpageColor(path):
     print("==============================================")
     print(path)
-    images = convert_from_path(path,poppler_path=r'\poppler-23.05.0\Library\bin')
+    images = convert_from_path(path,poppler_path=r'path to \poppler-23.05.0\Library\bin')
     
     p = 1
     npg = []
@@ -78,10 +78,12 @@ def checkPDFpageColor(path):
         hsv_sum = img.sum(0).sum(0)
         if hsv_sum[0] == 0 and hsv_sum[1] == 0:
             print(p, "====== Normal")
+            printSinglePage(path, "default", p, "Black and White Printer Name")
             npg.append(p)
             p += 1
         else:
             print(p, "====== Color")
+            printSinglePage(path,"default", p, "Color Printer Name")
             cpg.append(p)
             p += 1
     print(npg)
@@ -99,7 +101,7 @@ def askForPrinterName():
 
 def printIt(fileURL, printerColor):
     
-    sumatra = "\\SumatraPDF-3.4.6-64\\SumatraPDF-3.4.6-64.exe"
+    sumatra = "path to \SumatraPDF-3.4.6-64.exe"
     
     # opened file as reading (r) in binary (b) mode
     file = open(fileURL, 'rb')
@@ -118,12 +120,44 @@ def printIt(fileURL, printerColor):
     
     pageList = str(p)[1:-1]
     
-    pages = f"portrait, {pageList},1x"
+    pages = f"landscape, {pageList},1x"
             
   #try to print the pdf and if doesnt work then give error
     try:
         
         subprocess.call([sumatra, '-print-to', "Microsoft Print to PDF", '-print-settings', pages, pdf_name])
+
+    except BaseException as msg:
+        print(msg)
+        
+        
+def printSinglePage(fileURL, orientation, pg, printerColor):
+    
+    sumatra = "path to \\SumatraPDF-3.4.6-64.exe"
+    
+    # opened file as reading (r) in binary (b) mode
+    file = open(fileURL, 'rb')
+
+    # store data in pdfReader
+    pdfReader = PyPDF2.PdfReader(file)
+
+    # count number of pages
+    totalPages = len(pdfReader.pages)
+
+    # print number of pages
+    print(f"Total Pages: {totalPages}")
+        
+    
+    #p = [1,3]
+    
+    pageList = str(pg)
+    
+    pages = f"{orientation}, {pageList},1x"
+            
+  #try to print the pdf and if doesnt work then give error
+    try:
+        
+        subprocess.call([sumatra, '-print-to', printerColor, '-print-settings', pages, fileURL])
 
     except BaseException as msg:
         print(msg)
