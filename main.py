@@ -5,9 +5,9 @@ import xlrd
 import time
 import os
 import sys
-import win32print 
+#import win32print 
 import pathlib
-from pywintypes import com_error
+#from pywintypes import com_error
 import pdf2image
 from pdf2image import convert_from_path
 import numpy as np
@@ -25,10 +25,10 @@ st = time.time()
 
 def main():
     
-    allPrinters = [r"Normal Printer Name",r"Color Printer Name"]
+    allPrinters = [r"BnW Printer",r"Color Printer"]
     
-    for printer in allPrinters:
-        checkPrinter(printer)
+    '''for printer in allPrinters:
+        checkPrinter(printer)'''
         
     #ask for folder location
     path = input("Enter folder Path: ").strip()
@@ -51,13 +51,13 @@ def main():
         
     
     
-    
+'''    
 def checkPrinter(printer_name):
     try:
         handle = win32print.OpenPrinter(printer_name)   
         #print(handle)
     except: 
-        sys.exit(f"Printer {printer_name} is not available.")
+        sys.exit(f"Printer {printer_name} is not available.")'''
         
         
 def getAllPdfUrls(path):
@@ -101,8 +101,8 @@ def checkPDFpageColor(path, envmnt):
         color = test
         normal = test
     elif envmnt == "1":
-        color = "Color Printer Name"
-        normal = "Normal Printer Name"
+        color = "color printer name"
+        normal = "BnW printer name"
     
     
     for image in images:
@@ -111,13 +111,13 @@ def checkPDFpageColor(path, envmnt):
         if hsv_sum[0] == 0 and hsv_sum[1] == 0:
             #print(p, "====== Normal")
             #printSinglePage(path, "default", p, "Microsoft Print to PDF")
-            #printSinglePage(path, "default", p, "Normal Printer Name")
+            #printSinglePage(path, "default", p, "BnW printer name")
             npg.append(p)
             p += 1
         else:
             #print(p, "====== Color")
             #printSinglePage(path,"default", p, "Microsoft Print to PDF")
-            #printSinglePage(path,"default", p, "Color Printer Name")
+            #printSinglePage(path,"default", p, "color printer name")
             cpg.append(p)
             p += 1
     #print(npg)
@@ -151,7 +151,7 @@ def askForPrinterName():
         
 def printWholePDF(fileURL, orientation, pg, printerColor):
     
-    sumatra = "Path to \\SumatraPDF-3.4.6-64\\SumatraPDF-3.4.6-64.exe"
+    sumatra = "Path to \\SumatraPDF-3.4.6-64.exe"
     
     # opened file as reading (r) in binary (b) mode
     file = open(fileURL, 'rb')
