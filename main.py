@@ -1,14 +1,8 @@
 import pandas as pd
-import pyautogui
-import openpyxl
-import xlrd
 import time
-import os
+#import os
 import sys
-#import win32print 
 import pathlib
-#from pywintypes import com_error
-import pdf2image
 from pdf2image import convert_from_path
 import numpy as np
 import subprocess
@@ -25,7 +19,7 @@ st = time.time()
 
 def main():
     
-    allPrinters = [r"BnW Printer",r"Color Printer"]
+    allPrinters = [r"Normal Printer Name",r"Color Printer Name"]
     
     '''for printer in allPrinters:
         checkPrinter(printer)'''
@@ -33,17 +27,21 @@ def main():
     #ask for folder location
     path = input("Enter folder Path: ").strip()
     
-    env = input("Test = 0 and Print = 1 :").strip()
+    env = input("Test = 0 and Print = 1 and Sonic = s :").strip()
     
     if env == "0":
         t = "0"
-    elif env == "1":
+    elif env == "1" or env == "s":
         t = "1"
+ 
         
     pdfs = getAllPdfUrls(path)
     for p in pdfs:
         print("\nPrinting==========: "+str(p).rsplit("\\",1)[-1]+"\n")
-        ans = input("Want to print, 1 for Yes & 0 for No, x to cancel :")
+        if env == "s":
+            ans = "1"
+        else:
+            ans = input("Want to print, 1 for Yes & 0 for No, x to cancel :")
         if ans == "1":
             checkPDFpageColor(p, t)
         elif ans == "x":
@@ -67,7 +65,7 @@ def getAllPdfUrls(path):
     d = pathlib.Path(path)
     try:
         for i in d.iterdir():
-            if i.is_file() and str(i).count("-VC") > 1:
+            if i.is_file() and str(i).count("-VC") >= 1:
                 #print("VC")
                 pass
             elif i.is_file() and str(i).endswith(".pdf") and len(str(i).rsplit("\\",1)[-1]) < 9:
@@ -87,7 +85,7 @@ def getAllPdfUrls(path):
 def checkPDFpageColor(path, envmnt):
     print("==============================================")
     #print(path)
-    images = convert_from_path(path,poppler_path=r'Path to \poppler-23.05.0\Library\bin')
+    images = convert_from_path(path,poppler_path=r'path to \poppler-23.05.0\Library\bin')
     
     p = 1
     npg = []
@@ -101,8 +99,8 @@ def checkPDFpageColor(path, envmnt):
         color = test
         normal = test
     elif envmnt == "1":
-        color = "color printer name"
-        normal = "BnW printer name"
+        color = "Color Printer Name"
+        normal = "Normal Printer Name"
     
     
     for image in images:
@@ -111,13 +109,16 @@ def checkPDFpageColor(path, envmnt):
         if hsv_sum[0] == 0 and hsv_sum[1] == 0:
             #print(p, "====== Normal")
             #printSinglePage(path, "default", p, "Microsoft Print to PDF")
-            #printSinglePage(path, "default", p, "BnW printer name")
+            #printSinglePage(path, "default", p, "Normal Printer Name")
             npg.append(p)
             p += 1
+        elif hsv_sum[0] <= 250000 and hsv_sum[1] <= 350000:
+            npg.append(p)
+            p += 1 
         else:
             #print(p, "====== Color")
             #printSinglePage(path,"default", p, "Microsoft Print to PDF")
-            #printSinglePage(path,"default", p, "color printer name")
+            #printSinglePage(path,"default", p, "Color Printer Name")
             cpg.append(p)
             p += 1
     #print(npg)
@@ -151,7 +152,7 @@ def askForPrinterName():
         
 def printWholePDF(fileURL, orientation, pg, printerColor):
     
-    sumatra = "Path to \\SumatraPDF-3.4.6-64.exe"
+    sumatra = "path to \SumatraPDF-3.4.6-64.exe"
     
     # opened file as reading (r) in binary (b) mode
     file = open(fileURL, 'rb')
@@ -163,7 +164,7 @@ def printWholePDF(fileURL, orientation, pg, printerColor):
     totalPages = len(pdfReader.pages)
 
     # print number of pages
-    print(f"Total Pages: {totalPages}")
+    print(f"Page Numbers: {pg}")
         
     
     #p = [1,3]
